@@ -27,8 +27,13 @@ def load_stats():
     return {'games': 0, 'human_wins': 0, 'ai_wins': 0, 'ties': 0}
 
 def save_stats(stats):
-    with open(STATS_FILE, 'w') as f:
-        json.dump(stats, f)
+    try:
+        with open(STATS_FILE, 'w') as f:
+            json.dump(stats, f)
+    except Exception as e:
+        print(f"Error saving stats: {e}")
+        # In production environments, we might not have write access
+        pass
 
 def check_winner(board):
     """Check if there is a winner"""
@@ -261,5 +266,17 @@ def get_stats():
     stats = load_stats()
     return jsonify(stats)
 
+# Create templates folder if it doesn't exist
+if not os.path.exists('templates'):
+    os.makedirs('templates')
+
+# Write index.html to templates folder if it doesn't exist
+if not os.path.exists('templates/index.html'):
+    with open('templates/index.html', 'w') as f:
+        with open('index.html', 'r') as source:
+            f.write(source.read())
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Get port from environment variable or use 5000 as default
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
