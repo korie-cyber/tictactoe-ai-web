@@ -1,89 +1,265 @@
 from flask import Flask, render_template, request, jsonify
-import json
 from tictactoe_ai import TicTacToeAI
+import random
+import json
+import os 
 
 app = Flask(__name__)
 ai = TicTacToeAI()
 
+# Win patterns for checking victory
+WIN_PATTERNS = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],  # rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],  # columns
+    [0, 4, 8], [2, 4, 6]              # diagonals
+]
+
+# Global stats tracking
+STATS_FILE = 'game_stats.json'
+
+def load_stats():
+    if os.path.exists(STATS_FILE):
+        try:
+            with open(STATS_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            return {'games': 0, 'human_wins': 0, 'ai_wins': 0, 'ties': 0}
+    return {'games': 0, 'human_wins': 0, 'ai_wins': 0, 'ties': 0}
+
+def save_stats(stats):
+    with open(STATS_FILE, 'w') as f:
+        json.dump(stats, f)
+
+def check_winner(board):
+    """Check if there is a winner"""
+    for pattern in WIN_PATTERNS:
+        a, b, c = pattern
+        if board[a] == board[b] == board[c] != ' ':
+            return board[a], pattern  # Return winner and winning pattern
+    return None, None
+
+def is_full(board):
+    """Check if the board is full"""
+    return ' ' not in board
+
+def get_available_moves(board):
+    """Get all available moves"""
+    return [i for i, cell in enumerate(board) if cell == ' ']
+
+def minimax(board, depth, is_maximizing, alpha=-float('inf'), beta=float('inf'), ai_player='O'):
+    """Minimax algorithm with alpha-beta pruning for hard difficulty"""
+    human_player = 'X' if ai_player == 'O' else 'X'
+    
+    # Check for terminal states
+    winner, _ = check_winner(board)
+    if winner == ai_player:
+        return 10 - depth, None
+    elif winner == human_player:
+        return depth - 10, None
+    elif is_full(board):
+        return 0, None
+    
+    if is_maximizing:
+        best_score = -float('inf')
+        best_move = None
+        
+        for move in get_available_moves(board):
+            board[move] = ai_player
+            score, _ = minimax(board, depth + 1, False, alpha, beta, ai_player)
+            board[move] = ' '  # Undo move
+            
+            if score > best_score:
+                best_score = score
+                best_move = move
+            
+            alpha = max(alpha, best_score)
+            if beta <= alpha:
+                break
+        
+        return best_score, best_move
+    else:
+        best_score = float('inf')
+        best_move = None
+        
+        for move in get_available_moves(board):
+            board[move] = human_player
+            score, _ = minimax(board, depth + 1, True, alpha, beta, ai_player)
+            board[move] = ' '  # Undo move
+            
+            if score < best_score:
+                best_score = score
+                best_move = move
+            
+            beta = min(beta, best_score)
+            if beta <= alpha:
+                break
+        
+        return best_score, best_move
+
+def get_strategic_move(board, ai_player):
+    """Make a strategic move for medium difficulty"""
+    human_player = 'X' if ai_player == 'O' else 'X'
+    available_moves = get_available_moves(board)
+    
+    # Check if AI can win in the next move
+    for move in available_moves:
+        board[move] = ai_player
+        winner, _ = check_winner(board)
+        board[move] = ' '  # Undo move
+        if winner == ai_player:
+            return move
+    
+    # Check if human can win in the next move and block
+    for move in available_moves:
+        board[move] = human_player
+        winner, _ = check_winner(board)
+        board[move] = ' '  # Undo move
+        if winner == human_player:
+            return move
+    
+    # Take center if available
+    if 4 in available_moves:
+        return 4
+    
+    # Take corners if available
+    corners = [move for move in [0, 2, 6, 8] if move in available_moves]
+    if corners:
+        return random.choice(corners)
+    
+    # Take any available edge
+    edges = [move for move in [1, 3, 5, 7] if move in available_moves]
+    if edges:
+        return random.choice(edges)
+    
+    # Should never get here if there are available moves
+    return random.choice(available_moves)
+
+def make_move_by_difficulty(board, difficulty, ai_player):
+    """Make AI move based on difficulty level"""
+    available_moves = get_available_moves(board)
+    
+    if not available_moves:
+        return None
+    
+    if difficulty == "easy":
+        # Easy difficulty: random moves
+        return random.choice(available_moves)
+    
+    elif difficulty == "medium":
+        # Medium difficulty: strategic but not perfect
+        return get_strategic_move(board, ai_player)
+    
+    elif difficulty == "hard":
+        # Hard difficulty: minimax algorithm
+        _, best_move = minimax(board, 0, True, ai_player=ai_player)
+        return best_move
+    
+    else:  # "adaptive" or any other value
+        # Adaptive difficulty: use Q-learning
+        return ai.make_move(board, ai_player)
+
 @app.route('/')
 def index():
-    """Render the game page"""
+    """Render the main page"""
     return render_template('index.html')
 
 @app.route('/make_move', methods=['POST'])
 def make_move():
-    """Process a move and return the AI's response"""
+    """Process a move and respond with the AI's move"""
     data = request.get_json()
     board = data['board']
     human_player = data['humanPlayer']
+    difficulty = data.get('difficulty', 'adaptive')  # Default to adaptive if not provided
     ai_player = 'O' if human_player == 'X' else 'X'
+
+    # Check if human won or board is full
+    winner, win_pattern = check_winner(board)
+    if winner:
+        return jsonify({
+            'status': 'win', 
+            'winner': winner,
+            'line': WIN_PATTERNS.index(win_pattern) if win_pattern else -1
+        })
+    if is_full(board):
+        return jsonify({'status': 'tie'})
+
+    # AI makes a move
+    move = make_move_by_difficulty(board, difficulty, ai_player)
     
-    # Check if game is already over
-    if check_win(board, human_player):
-        return jsonify({"status": "win", "winner": human_player})
-    elif check_win(board, ai_player):
-        return jsonify({"status": "win", "winner": ai_player})
-    elif check_tie(board):
-        return jsonify({"status": "tie"})
+    if move is None:
+        return jsonify({'status': 'error', 'message': 'No valid moves available'})
     
-    # AI's turn
-    available_actions = [i for i in range(9) if board[i] == ' ']
-    if not available_actions:
-        return jsonify({"status": "tie"})
+    # Update board with AI's move
+    new_board = board[:]
+    new_board[move] = ai_player
+
+    # Check outcome after AI move
+    winner, win_pattern = check_winner(new_board)
     
-    # Get AI move
-    ai_move = ai.make_move(board, ai_player)
-    board[ai_move] = ai_player
+    response = {'move': move}
     
-    # Check game status after AI move
-    if check_win(board, ai_player):
-        ai.reward(1.0, board, [])  # AI wins
-        ai.save_q_values()
-        return jsonify({"status": "win", "winner": ai_player, "move": ai_move, "board": board})
-    elif check_tie(board):
-        ai.reward(0.2, board, [])  # Tie
-        ai.save_q_values()
-        return jsonify({"status": "tie", "move": ai_move, "board": board})
+    if winner:
+        line_index = WIN_PATTERNS.index(win_pattern) if win_pattern else -1
+        # If using adaptive AI, update the Q-values
+        if difficulty == "adaptive":
+            ai.reward(1, board, move, ai_player)
+        response.update({'status': 'win', 'winner': winner, 'line': line_index})
+    elif is_full(new_board):
+        # If using adaptive AI, update the Q-values
+        if difficulty == "adaptive":
+            ai.reward(0.5, board, move, ai_player)
+        response.update({'status': 'tie'})
     else:
-        available_actions = [i for i in range(9) if board[i] == ' ']
-        ai.reward(0.0, board, available_actions)  # Game continues
-        return jsonify({"status": "ongoing", "move": ai_move, "board": board})
+        # If using adaptive AI, provide initial feedback
+        if difficulty == "adaptive":
+            ai.reward(0, board, move, ai_player)
+        response.update({'status': 'continue'})
+
+    return jsonify(response)
 
 @app.route('/game_over', methods=['POST'])
 def game_over():
-    """Handle game over scenarios and rewards"""
+    """Record the game outcome and update AI's learning"""
     data = request.get_json()
     board = data['board']
     result = data['result']
     human_player = data['humanPlayer']
+    difficulty = data.get('difficulty', 'adaptive')
     ai_player = 'O' if human_player == 'X' else 'X'
-    
-    if result == "human_win":
-        ai.reward(-1.0, board, [])  # Negative reward for AI losing
-    elif result == "ai_win":
-        ai.reward(1.0, board, [])  # Positive reward for AI winning
-    elif result == "tie":
-        ai.reward(0.2, board, [])  # Small positive reward for tie
-    
-    ai.save_q_values()
-    return jsonify({"status": "success"})
 
-def check_win(board, player):
-    """Check if the specified player has won"""
-    winning_combinations = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],  # Rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],  # Columns
-        [0, 4, 8], [2, 4, 6]              # Diagonals
-    ]
-    
-    for combo in winning_combinations:
-        if all(board[i] == player for i in combo):
-            return True
-    return False
+    # Only update Q-values if using adaptive AI
+    if difficulty == "adaptive":
+        if result == 'human_win':
+            # Penalize AI for losing
+            for i, cell in enumerate(board):
+                if cell == ai_player:
+                    ai.reward(-1, board, i, ai_player)
+        elif result == 'tie':
+            # Neutral reward for a tie
+            for i, cell in enumerate(board):
+                if cell == ai_player:
+                    ai.reward(0.5, board, i, ai_player)
 
-def check_tie(board):
-    """Check if the game is a tie"""
-    return ' ' not in board
+    # Update global stats
+    stats = load_stats()
+    stats['games'] += 1
+    
+    if result == 'human_win':
+        stats['human_wins'] += 1
+    elif result == 'ai_win':
+        stats['ai_wins'] += 1
+    else:  # tie
+        stats['ties'] += 1
+    
+    save_stats(stats)
+
+    return jsonify({'status': 'ok'})
+
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    """Return the current game statistics"""
+    stats = load_stats()
+    return jsonify(stats)
 
 if __name__ == '__main__':
     app.run(debug=True)
