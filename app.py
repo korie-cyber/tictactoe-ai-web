@@ -101,44 +101,6 @@ def minimax(board, depth, is_maximizing, alpha=-float('inf'), beta=float('inf'),
         
         return best_score, best_move
 
-def get_strategic_move(board, ai_player):
-    """Make a strategic move for medium difficulty"""
-    human_player = 'X' if ai_player == 'O' else 'X'
-    available_moves = get_available_moves(board)
-    
-    # Check if AI can win in the next move
-    for move in available_moves:
-        board[move] = ai_player
-        winner, _ = check_winner(board)
-        board[move] = ' '  # Undo move
-        if winner == ai_player:
-            return move
-    
-    # Check if human can win in the next move and block
-    for move in available_moves:
-        board[move] = human_player
-        winner, _ = check_winner(board)
-        board[move] = ' '  # Undo move
-        if winner == human_player:
-            return move
-    
-    # Take center if available
-    if 4 in available_moves:
-        return 4
-    
-    # Take corners if available
-    corners = [move for move in [0, 2, 6, 8] if move in available_moves]
-    if corners:
-        return random.choice(corners)
-    
-    # Take any available edge
-    edges = [move for move in [1, 3, 5, 7] if move in available_moves]
-    if edges:
-        return random.choice(edges)
-    
-    # Should never get here if there are available moves
-    return random.choice(available_moves)
-
 def make_move_by_difficulty(board, difficulty, ai_player):
     """Make AI move based on difficulty level"""
     available_moves = get_available_moves(board)
@@ -146,20 +108,12 @@ def make_move_by_difficulty(board, difficulty, ai_player):
     if not available_moves:
         return None
     
-    if difficulty == "easy":
-        # Easy difficulty: random moves
-        return random.choice(available_moves)
-    
-    elif difficulty == "medium":
-        # Medium difficulty: strategic but not perfect
-        return get_strategic_move(board, ai_player)
-    
-    elif difficulty == "hard":
+    if difficulty == "hard":
         # Hard difficulty: minimax algorithm
         _, best_move = minimax(board, 0, True, ai_player=ai_player)
         return best_move
     
-    else:  # "adaptive" or any other value
+    else:  # "adaptive" or any other value defaults to adaptive
         # Adaptive difficulty: use Q-learning
         return ai.make_move(board, ai_player)
 
