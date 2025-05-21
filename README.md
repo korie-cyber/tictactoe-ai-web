@@ -1,4 +1,4 @@
-# Ultimate Tic-Tac-Toe Challenge
+# Tic-Tac-Toe Challenge
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.0.1-green.svg)](https://flask.palletsprojects.com/)
@@ -6,9 +6,7 @@
 
 A sophisticated Tic-Tac-Toe web application featuring an intelligent adaptive AI that learns from gameplay through reinforcement learning (Q-learning).
 
-![Game Screenshot](https://via.placeholder.com/600x400?text=Tic-Tac-Toe+Challenge)
-
-## 🎮 Features
+## Features
 
 - **Multiple AI Difficulty Levels**:
   - Easy: Random moves for beginners
@@ -27,8 +25,6 @@ A sophisticated Tic-Tac-Toe web application featuring an intelligent adaptive AI
   - Persistent AI model that remembers strategies
   - RESTful API for game state management
   - Clean separation between frontend and backend
-
-## 🚀 Quick Start
 
 ### Local Development
 
@@ -64,7 +60,7 @@ npm install -g vercel
 vercel
 ```
 
-## 🧠 How the AI Works
+## How the AI Works
 
 The adaptive AI implements Q-learning, a model-free reinforcement learning algorithm:
 
@@ -95,7 +91,7 @@ ultimate-tictactoe/
 └── README.md             # Project documentation
 ```
 
-## 💻 Technologies
+## Technologies
 
 - **Backend**:
   - Python with Flask
