@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Black & White Color Palette */
+            /* Dark Color Palette */
             --primary-color: #ffffff; /* Pure white */
             --secondary-color: #d9d9d9; /* Light gray */
             --accent-color: #000000; /* Pure black */
@@ -22,7 +22,7 @@
             --warning-color: #969696; /* Medium gray for warnings */
             --danger-color: #000000; /* Black for danger */
             --x-color: #ffffff; /* White for X */
-            --o-color: #000000; /* Black for O */
+            --o-color: #ffffff; /* White for O */
             --cell-size: 110px;
             --board-gap: 8px;
             --gradient-start: #242424;
@@ -188,7 +188,7 @@
 
         .cell.o-color::before {
             border: 15px solid var(--o-color);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
         }
 
         .x-color {
@@ -582,54 +582,7 @@
         }
 
         .cell.o-color {
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Theme toggle */
-        .theme-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 60px;
-            height: 30px;
-            border-radius: 15px;
-            background-color: var(--darker-bg);
-            display: flex;
-            align-items: center;
-            padding: 0 5px;
-            cursor: pointer;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s;
-        }
-
-        .theme-switch-handle {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            transform: translateX(30px);
-            transition: transform 0.3s, background-color 0.3s;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .theme-icons {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 10px;
-            color: var(--muted-text);
-            pointer-events: none;
-        }
-
-        .theme-icons i {
-            font-size: 14px;
-        }
-
-        .theme-icons .fa-moon {
-            color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
         /* Responsive design */
@@ -690,11 +643,6 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
-
-            .theme-switch {
-                top: 10px;
-                right: 10px;
-            }
         }
     </style>
 </head>
@@ -702,14 +650,6 @@
     <div class="container">
         <h1>TIC-TAC-TOE Challenge</h1>
         <p class="subtitle">Challenge our Adaptive AI!</p>
-        
-        <div class="theme-switch" id="theme-switch">
-            <div class="theme-icons">
-                <i class="fas fa-sun"></i>
-                <i class="fas fa-moon"></i>
-            </div>
-            <div class="theme-switch-handle"></div>
-        </div>
         
         <div class="player-select">
             <label for="player-choice">You Play As:</label>
@@ -722,10 +662,8 @@
         <div class="difficulty-select">
             <label for="difficulty">Difficulty:</label>
             <select id="difficulty">
-                <option value="easy">Easy</option>
-                <option value="medium" selected>Medium</option>
+                <option value="adaptive" selected>Adaptive AI</option>
                 <option value="hard">Hard</option>
-                <option value="adaptive">Adaptive AI</option>
             </select>
         </div>
         
@@ -792,8 +730,13 @@
             const playAgainBtn = document.getElementById('play-again-btn');
             const loadingOverlay = document.getElementById('loading-overlay');
             const gameContainer = document.querySelector('.game-container');
-            const themeSwitch = document.getElementById('theme-switch');
-            const themeHandle = document.querySelector('.theme-switch-handle');
+            
+            // Win patterns
+            const WIN_PATTERNS = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                [0, 4, 8], [2, 4, 6]             // diagonals
+            ];
             
             // Game state
             let gameBoard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
@@ -806,49 +749,26 @@
                 ai: 0,
                 tie: 0
             };
-            let movesHistory = [];
-            let aiDifficulty = 'medium';
-            let adaptiveLevel = 0.5; // For adaptive difficulty (0-1 range)
             
-            // Theme handling
-            let isDarkMode = true; // Default to dark mode
-
-            themeSwitch.addEventListener('click', () => {
-                isDarkMode = !isDarkMode;
-                updateTheme();
-            });
-
-            function updateTheme() {
-                if (isDarkMode) {
-                    // Dark mode (Black & White)
-                    themeHandle.style.transform = 'translateX(30px)';
-                    document.documentElement.style.setProperty('--gradient-start', '#242424');
-                    document.documentElement.style.setProperty('--gradient-end', '#121212');
-                    document.documentElement.style.setProperty('--card-bg', '#242424');
-                    document.documentElement.style.setProperty('--dark-bg', '#121212');
-                    document.documentElement.style.setProperty('--darker-bg', '#1a1a1a');
-                    document.documentElement.style.setProperty('--light-text', '#ffffff');
-                    document.documentElement.style.setProperty('--muted-text', '#a0a0a0');
-                } else {
-                    // Light mode (Still black & white theme)
-                    themeHandle.style.transform = 'translateX(0)';
-                    document.documentElement.style.setProperty('--gradient-start', '#e6e6e6');
-                    document.documentElement.style.setProperty('--gradient-end', '#cccccc');
-                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
-                    document.documentElement.style.setProperty('--dark-bg', '#f8f9fa');
-                    document.documentElement.style.setProperty('--darker-bg', '#f0f0f0');
-                    document.documentElement.style.setProperty('--light-text', '#000000');
-                    document.documentElement.style.setProperty('--muted-text', '#505050');
+            // Load stats from server
+            async function loadStats() {
+                try {
+                    const response = await fetch('/stats');
+                    const data = await response.json();
+                    scores.human = data.human_wins || 0;
+                    scores.ai = data.ai_wins || 0;
+                    scores.tie = data.ties || 0;
+                    updateScoreDisplay();
+                } catch (error) {
+                    console.error('Error loading stats:', error);
                 }
-                
-                // Save theme preference
-                localStorage.setItem('ticTacToeDarkMode', isDarkMode);
             }
             
-            // Load saved theme preference
-            if (localStorage.getItem('ticTacToeDarkMode') === 'false') {
-                isDarkMode = false;
-                updateTheme();
+            // Update score display
+            function updateScoreDisplay() {
+                humanScoreDisplay.textContent = scores.human;
+                aiScoreDisplay.textContent = scores.ai;
+                tieScoreDisplay.textContent = scores.tie;
             }
             
             // Initialize the game
@@ -856,7 +776,6 @@
                 gameBoard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
                 currentPlayer = 'X';
                 gameActive = true;
-                movesHistory = [];
                 
                 // Clear the board
                 cells.forEach(cell => {
@@ -864,6 +783,10 @@
                     cell.classList.add('animate');
                     setTimeout(() => cell.classList.remove('animate'), 500);
                 });
+                
+                // Clear any win lines
+                const existingLines = board.querySelectorAll('.win-line');
+                existingLines.forEach(line => line.remove());
                 
                 // Update message
                 message.textContent = humanPlayer === currentPlayer ? 'Your turn' : 'AI thinking...';
@@ -883,26 +806,14 @@
             
             // Check for a win
             function checkWin(board, player) {
-                const winPatterns = [
-                    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-                    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-                    [0, 4, 8], [2, 4, 6]             // Diagonals
-                ];
-                
-                return winPatterns.some(pattern => {
+                return WIN_PATTERNS.some(pattern => {
                     return pattern.every(index => board[index] === player);
                 });
             }
             
             // Find winning pattern
             function findWinningPattern(board, player) {
-                const winPatterns = [
-                    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-                    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-                    [0, 4, 8], [2, 4, 6]             // Diagonals
-                ];
-                
-                for (let pattern of winPatterns) {
+                for (let pattern of WIN_PATTERNS) {
                     if (pattern.every(index => board[index] === player)) {
                         return pattern;
                     }
@@ -913,20 +824,6 @@
             // Check if the board is full
             function isBoardFull(board) {
                 return board.every(cell => cell !== ' ');
-            }
-            
-            // Update UI after a move
-            function updateUI() {
-                cells.forEach((cell, index) => {
-                    cell.className = 'cell';
-                    if (gameBoard[index] === 'X') {
-                        cell.classList.add('x-color');
-                    } else if (gameBoard[index] === 'O') {
-                        cell.classList.add('o-color');
-                    }
-                });
-                
-                updateHoverState();
             }
             
             // Update hover state for cells
@@ -948,7 +845,7 @@
             }
             
             // Handle cell click
-            function handleCellClick(e) {
+            async function handleCellClick(e) {
                 const cell = e.target;
                 const index = parseInt(cell.getAttribute('data-index'));
                 
@@ -960,201 +857,9 @@
                 // Make human move
                 makeMove(index, humanPlayer);
                 
-                // Check game status
-                checkGameStatus();
-                
-                // AI's turn
-                if (gameActive) {
-                    setTimeout(makeAIMove, 800);
-                }
-            }
-            
-            // Make a move
-            function makeMove(index, player) {
-                gameBoard[index] = player;
-                movesHistory.push({ index, player });
-                
-                const cell = cells[index];
-                cell.className = 'cell';
-                cell.classList.add(player === 'X' ? 'x-color' : 'o-color');
-                cell.classList.add('animate');
-                
-                currentPlayer = player === 'X' ? 'O' : 'X';
-                
-                updateHoverState();
-            }
-            
-            // AI move logic
-            function makeAIMove() {
-                if (!gameActive) return;
-                
-                // Show loading indicator
-                loadingOverlay.classList.add('active');
-                
-                setTimeout(() => {
-                    let index;
-                    
-                    // Choose move based on difficulty
-                    if (aiDifficulty === 'easy') {
-                        index = getEasyAIMove();
-                    } else if (aiDifficulty === 'medium') {
-                        index = getMediumAIMove();
-                    } else if (aiDifficulty === 'hard') {
-                        index = getHardAIMove();
-                    } else if (aiDifficulty === 'adaptive') {
-                        index = getAdaptiveAIMove();
-                    }
-                    
-                    // Make the move
-                    makeMove(index, aiPlayer);
-                    
-                    // Hide loading indicator
-                    loadingOverlay.classList.remove('active');
-                    
-                    // Check game status
-                    checkGameStatus();
-                }, 500); // Simulate thinking time
-            }
-            
-            // Easy AI: Random moves
-            function getEasyAIMove() {
-                const emptyCells = gameBoard
-                    .map((cell, index) => cell === ' ' ? index : null)
-                    .filter(index => index !== null);
-                    
-                return emptyCells[Math.floor(Math.random() * emptyCells.length)];
-            }
-            
-            // Medium AI: Block obvious wins, otherwise random
-            function getMediumAIMove() {
-                // Check if AI can win
-                for (let i = 0; i < gameBoard.length; i++) {
-                    if (gameBoard[i] === ' ') {
-                        // Try this move
-                        gameBoard[i] = aiPlayer;
-                        if (checkWin(gameBoard, aiPlayer)) {
-                            gameBoard[i] = ' '; // Undo move
-                            return i; // Winning move
-                        }
-                        gameBoard[i] = ' '; // Undo move
-                    }
-                }
-                
-                // Check if human can win and block
-                for (let i = 0; i < gameBoard.length; i++) {
-                    if (gameBoard[i] === ' ') {
-                        // Try this move
-                        gameBoard[i] = humanPlayer;
-                        if (checkWin(gameBoard, humanPlayer)) {
-                            gameBoard[i] = ' '; // Undo move
-                            return i; // Blocking move
-                        }
-                        gameBoard[i] = ' '; // Undo move
-                    }
-                }
-                
-                // Center is strategically advantageous
-                if (gameBoard[4] === ' ') return 4;
-                
-                // Otherwise random move
-                return getEasyAIMove();
-            }
-            
-            // Hard AI: Minimax algorithm
-            function getHardAIMove() {
-                return getBestMove(gameBoard, aiPlayer).index;
-            }
-            
-            // Adaptive AI: Adjust difficulty based on player performance
-            function getAdaptiveAIMove() {
-                // Use random number to determine if we make the best move or a random move
-                if (Math.random() < adaptiveLevel) {
-                    return getHardAIMove();
-                } else {
-                    return getEasyAIMove();
-                }
-            }
-            
-            // Minimax algorithm for unbeatable AI
-            function getBestMove(board, player) {
-                const availableMoves = getAvailableMoves(board);
-                
-                // Check for terminal states
-                if (checkWin(board, humanPlayer)) {
-                    return { score: -10 };
-                } else if (checkWin(board, aiPlayer)) {
-                    return { score: 10 };
-                } else if (availableMoves.length === 0) {
-                    return { score: 0 };
-                }
-                
-                const moves = [];
-                
-                // Try each available move
-                for (let i = 0; i < availableMoves.length; i++) {
-                    const move = {};
-                    move.index = availableMoves[i];
-                    
-                    // Make the move
-                    board[availableMoves[i]] = player;
-                    
-                    // Get score from recursive minimax
-                    if (player === aiPlayer) {
-                        const result = getBestMove(board, humanPlayer);
-                        move.score = result.score;
-                    } else {
-                        const result = getBestMove(board, aiPlayer);
-                        move.score = result.score;
-                    }
-                    
-                    // Undo the move
-                    board[availableMoves[i]] = ' ';
-                    
-                    moves.push(move);
-                }
-                
-                // Find best move
-                let bestMove;
-                if (player === aiPlayer) {
-                    // Maximizing player
-                    let bestScore = -Infinity;
-                    for (let i = 0; i < moves.length; i++) {
-                        if (moves[i].score > bestScore) {
-                            bestScore = moves[i].score;
-                            bestMove = i;
-                        }
-                    }
-                } else {
-                    // Minimizing player
-                    let bestScore = Infinity;
-                    for (let i = 0; i < moves.length; i++) {
-                        if (moves[i].score < bestScore) {
-                            bestScore = moves[i].score;
-                            bestMove = i;
-                        }
-                    }
-                }
-                
-                return moves[bestMove];
-            }
-            
-            // Get available moves
-            function getAvailableMoves(board) {
-                return board
-                    .map((cell, index) => cell === ' ' ? index : null)
-                    .filter(index => index !== null);
-            }
-            
-            // Check game status after a move
-            function checkGameStatus() {
-                // Check for win
+                // Check if human won
                 if (checkWin(gameBoard, humanPlayer)) {
                     endGame('win');
-                    return;
-                }
-                
-                if (checkWin(gameBoard, aiPlayer)) {
-                    endGame('lose');
                     return;
                 }
                 
@@ -1164,43 +869,122 @@
                     return;
                 }
                 
-                // Game continues
-                message.textContent = currentPlayer === humanPlayer ? 'Your turn' : 'AI thinking...';
+                // AI's turn
+                if (gameActive) {
+                    await makeAIMove();
+                }
+            }
+            
+            // Make a move
+            function makeMove(index, player) {
+                gameBoard[index] = player;
+                
+                const cell = cells[index];
+                cell.className = 'cell';
+                cell.classList.add(player === 'X' ? 'x-color' : 'o-color');
+                cell.classList.add('animate');
+                
+                currentPlayer = player === 'X' ? 'O' : 'X';
+                updateHoverState();
+            }
+            
+            // AI move logic
+            async function makeAIMove() {
+                if (!gameActive) return;
+                
+                // Show loading indicator
+                loadingOverlay.classList.add('active');
+                message.textContent = 'AI thinking...';
+                
+                try {
+                    const response = await fetch('/make_move', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            board: gameBoard,
+                            humanPlayer: humanPlayer,
+                            difficulty: difficultySelect.value
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Hide loading indicator
+                    loadingOverlay.classList.remove('active');
+                    
+                    if (data.status === 'error') {
+                        message.textContent = 'Error: ' + data.message;
+                        return;
+                    }
+                    
+                    // Make AI move
+                    if (data.move !== undefined) {
+                        makeMove(data.move, aiPlayer);
+                    }
+                    
+                    // Check game status
+                    if (data.status === 'win') {
+                        if (data.winner === humanPlayer) {
+                            endGame('win');
+                        } else {
+                            endGame('lose');
+                        }
+                        if (data.line !== undefined && data.line >= 0) {
+                            showWinLine(data.winner, WIN_PATTERNS[data.line]);
+                        }
+                    } else if (data.status === 'tie') {
+                        endGame('tie');
+                    } else {
+                        // Game continues
+                        message.textContent = 'Your turn';
+                    }
+                    
+                } catch (error) {
+                    console.error('Error making AI move:', error);
+                    loadingOverlay.classList.remove('active');
+                    message.textContent = 'Connection error. Try again.';
+                }
             }
             
             // End the game
-            function endGame(result) {
+            async function endGame(result) {
                 gameActive = false;
                 
-                // Update scores
+                // Update local scores
                 if (result === 'win') {
                     scores.human++;
-                    humanScoreDisplay.textContent = scores.human;
                     message.textContent = 'You win!';
                     message.className = 'message win';
-                    showWinLine(humanPlayer);
                 } else if (result === 'lose') {
                     scores.ai++;
-                    aiScoreDisplay.textContent = scores.ai;
                     message.textContent = 'AI wins!';
                     message.className = 'message lose';
-                    showWinLine(aiPlayer);
                 } else {
                     scores.tie++;
-                    tieScoreDisplay.textContent = scores.tie;
                     message.textContent = 'It\'s a tie!';
                     message.className = 'message tie';
                 }
                 
-                // Update adaptive difficulty based on results
-                if (aiDifficulty === 'adaptive') {
-                    if (result === 'win') {
-                        // Make AI slightly harder
-                        adaptiveLevel = Math.min(adaptiveLevel + 0.1, 1);
-                    } else if (result === 'lose') {
-                        // Make AI slightly easier
-                        adaptiveLevel = Math.max(adaptiveLevel - 0.05, 0);
-                    }
+                updateScoreDisplay();
+                
+                // Send game result to server
+                try {
+                    await fetch('/game_over', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            board: gameBoard,
+                            result: result === 'win' ? 'human_win' : (result === 'lose' ? 'ai_win' : 'tie'),
+                            humanPlayer: humanPlayer,
+                            difficulty: difficultySelect.value
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error sending game result:', error);
                 }
                 
                 // Show game over overlay after a delay
@@ -1216,11 +1000,10 @@
             }
             
             // Show the winning line
-            function showWinLine(player) {
-                const winPattern = findWinningPattern(gameBoard, player);
-                if (!winPattern) return;
+            function showWinLine(player, pattern) {
+                if (!pattern) return;
                 
-                const [a, b, c] = winPattern;
+                const [a, b, c] = pattern;
                 
                 // Determine type of win
                 let lineType;
@@ -1237,16 +1020,13 @@
                 line.className = `win-line ${lineType}`;
                 
                 // Position the line based on win type
-                const board = document.getElementById('game-board');
                 const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
                 const gap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--board-gap'));
                 
                 if (lineType === 'horizontal') {
-                    // Calculate row number (0, 1, or 2)
                     const row = Math.floor(a / 3);
                     line.style.top = `${row * (cellSize + gap) + cellSize / 2}px`;
                 } else if (lineType === 'vertical') {
-                    // Calculate column number (0, 1, or 2)
                     const col = a % 3;
                     line.style.left = `${col * (cellSize + gap) + cellSize / 2}px`;
                 } else if (lineType === 'diagonal-1') {
@@ -1291,15 +1071,11 @@
                     );
                     
                     animation.onfinish = () => {
-                        document.body.removeChild(confetti);
+                        if (document.body.contains(confetti)) {
+                            document.body.removeChild(confetti);
+                        }
                     };
                 }
-            }
-            
-            // Add shake effect to game container
-            function shakeBoard() {
-                gameContainer.classList.add('shake');
-                setTimeout(() => gameContainer.classList.remove('shake'), 500);
             }
             
             // Event listeners
@@ -1317,18 +1093,13 @@
             });
             
             difficultySelect.addEventListener('change', () => {
-                aiDifficulty = difficultySelect.value;
-                
-                // Reset adaptive level when changing to adaptive
-                if (aiDifficulty === 'adaptive') {
-                    adaptiveLevel = 0.5;
-                }
-                
                 initGame();
             });
             
             // Initialize the game
-            initGame();
+            loadStats().then(() => {
+                initGame();
+            });
         });
     </script>
 </body>
