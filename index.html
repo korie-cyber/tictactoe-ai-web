@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="game-panel" role="main" aria-label="Tic-Tac-Toe Game">
+  <span class="corner-br" aria-hidden="true"></span>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Tic-Tac-Toe</h1>
+    <span class="label-tag">vs artificial intelligence</span>
+  </div>
+
+  <!-- Segmented Controls -->
+  <div class="controls-row">
+    <div class="seg-group" role="group" aria-label="Choose your marker">
+      <span class="seg-label">Play As</span>
+      <div class="seg-track" id="marker-track">
+        <div class="slider" id="marker-slider"></div>
+        <button class="seg-btn" data-marker="X" aria-pressed="true" type="button">X</button>
+        <button class="seg-btn" data-marker="O" aria-pressed="false" type="button">O</button>
+      </div>
+    </div>
+    <div class="seg-group" role="group" aria-label="Difficulty level">
+      <span class="seg-label">Difficulty</span>
+      <div class="seg-track" id="diff-track">
+        <div class="slider" id="diff-slider"></div>
+        <button class="seg-btn" data-diff="easy" aria-pressed="false" type="button">Easy</button>
+        <button class="seg-btn" data-diff="medium" aria-pressed="true" type="button">Medium</button>
+        <button class="seg-btn" data-diff="hard" aria-pressed="false" type="button">Hard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score Panel -->
+  <div class="score-row" role="group" aria-label="Scores">
+    <div class="score-card">
+      <div class="score-label">You</div>
+      <div class="score-value" id="score-human">0</div>
+      <div class="streak-badge" id="streak-badge" hidden>
+        <span class="flame" aria-hidden="true">&#x1F525;</span>
+        <span id="streak-count">0</span>
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="score-label">Draw</div>
+      <div class="score-value" id="score-draw">0</div>
+    </div>
+    <div class="score-card">
+      <div class="score-label">AI</div>
+      <div class="score-value" id="score-ai">0</div>
+    </div>
+  </div>
+
+  <!-- Turn Indicator -->
+  <div class="turn-indicator" aria-live="polite">
+    <span class="turn-text" id="turn-text">YOUR TURN</span>
+  </div>
+
+  <!-- Board -->
+  <div class="board-wrapper" id="board-wrapper">
+    <div class="board" id="board" role="grid" aria-label="Game board">
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 1: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 2: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 3: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 4: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 5: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 6: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 7: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 8: empty"></div>
+      <div class="cell" role="gridcell" tabindex="0" aria-label="Cell 9: empty"></div>
+    </div>
+    <div class="win-line-container" id="win-line-container" aria-hidden="true"></div>
+  </div>
+
+  <!-- Bottom Controls -->
+  <div class="bottom-controls">
+    <button class="btn-glass" id="btn-new-game" type="button">New Game</button>
+  </div>
+</div>
+
+<!-- Result Modal -->
+<div class="result-overlay" id="result-overlay" role="dialog" aria-modal="true" aria-label="Game result">
+  <div class="result-modal" id="result-modal">
+    <div class="result-badge">
+      <div class="piece" id="result-badge-piece"></div>
+    </div>
+    <h2 class="result-title" id="result-title">You Win</h2>
+    <p class="result-subtitle" id="result-subtitle">Well played!</p>
+    <div class="result-actions">
+      <button class="btn-glass primary" id="btn-play-again" type="button">Play Again</button>
+      <button class="btn-glass" id="btn-change-diff" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
