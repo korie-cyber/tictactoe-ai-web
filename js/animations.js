@@ -19,14 +19,14 @@ export function animatePiecePlacement(cell) {
       }
     );
     gsap.fromTo(cell,
-      { boxShadow: '0 0 0px rgba(37,99,235,0)' },
+      { boxShadow: '0 0 0px rgba(56,189,248,0)' },
       {
-        boxShadow: '0 0 20px rgba(37,99,235,0.5), 0 0 40px rgba(159,122,234,0.3)',
+        boxShadow: '0 0 20px rgba(56,189,248,0.5), 0 0 40px rgba(125,211,252,0.3)',
         duration: 0.3,
         ease: 'power2.out',
         onComplete() {
           gsap.to(cell, {
-            boxShadow: '0 0 8px rgba(37,99,235,0.12), 0 0 16px rgba(159,122,234,0.06)',
+            boxShadow: '0 0 6px rgba(56,189,248,0.1), 0 0 12px rgba(125,211,252,0.05)',
             duration: 0.6,
             ease: 'power2.inOut',
           });
