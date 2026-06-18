@@ -5,6 +5,7 @@ import {
   animateScreenShake, animateModalIn, animateModalOut,
   animateBoardClear, animateBoardIn, animateScorePop, pulseStreakIcon,
 } from './animations.js';
+import { initCircuitBackground } from './circuitBg.js';
 
 let state = createInitialState('X', 'medium');
 let aiMoveQueued = false;
@@ -195,14 +196,14 @@ function drawWinLine(pattern) {
   const [a, , c] = pattern;
   const cellA = cells[a];
   const cellC = cells[c];
-  const boardRect = boardEl.getBoundingClientRect();
-  const rectA = cellA.getBoundingClientRect();
-  const rectC = cellC.getBoundingClientRect();
+  const ref = winLineContainer.getBoundingClientRect();
+  const rA = cellA.getBoundingClientRect();
+  const rC = cellC.getBoundingClientRect();
 
-  const x1 = rectA.left + rectA.width / 2 - boardRect.left;
-  const y1 = rectA.top + rectA.height / 2 - boardRect.top;
-  const x2 = rectC.left + rectC.width / 2 - boardRect.left;
-  const y2 = rectC.top + rectC.height / 2 - boardRect.top;
+  const x1 = rA.left + rA.width / 2 - ref.left;
+  const y1 = rA.top + rA.height / 2 - ref.top;
+  const x2 = rC.left + rC.width / 2 - ref.left;
+  const y2 = rC.top + rC.height / 2 - ref.top;
 
   const length = Math.hypot(x2 - x1, y2 - y1);
   const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
@@ -293,5 +294,6 @@ $('#btn-change-diff').addEventListener('click', async () => {
 });
 
 // ── Init ──
+initCircuitBackground();
 render();
 handlePhase();

@@ -82,32 +82,43 @@ body {
   50% { opacity: 1; }
 }
 
-/* Trace traveling light */
-@keyframes trace-flow-1 { 0% { stroke-dashoffset: 600; } 100% { stroke-dashoffset: 0; } }
-@keyframes trace-flow-2 { 0% { stroke-dashoffset: 500; } 100% { stroke-dashoffset: 0; } }
-@keyframes trace-flow-3 { 0% { stroke-dashoffset: 700; } 100% { stroke-dashoffset: 0; } }
-@keyframes trace-flow-4 { 0% { stroke-dashoffset: 450; } 100% { stroke-dashoffset: 0; } }
-@keyframes trace-flow-5 { 0% { stroke-dashoffset: 550; } 100% { stroke-dashoffset: 0; } }
-@keyframes trace-flow-6 { 0% { stroke-dashoffset: 650; } 100% { stroke-dashoffset: 0; } }
-@keyframes trace-flow-7 { 0% { stroke-dashoffset: 520; } 100% { stroke-dashoffset: 0; } }
-@keyframes trace-flow-8 { 0% { stroke-dashoffset: 480; } 100% { stroke-dashoffset: 0; } }
+/* Trace traveling light — 14 animated traces with staggered timing */
+@keyframes trace-flow-1  { 0% { stroke-dashoffset: 800; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-2  { 0% { stroke-dashoffset: 700; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-3  { 0% { stroke-dashoffset: 900; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-4  { 0% { stroke-dashoffset: 650; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-5  { 0% { stroke-dashoffset: 750; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-6  { 0% { stroke-dashoffset: 850; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-7  { 0% { stroke-dashoffset: 720; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-8  { 0% { stroke-dashoffset: 680; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-9  { 0% { stroke-dashoffset: 780; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-10 { 0% { stroke-dashoffset: 620; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-11 { 0% { stroke-dashoffset: 880; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-12 { 0% { stroke-dashoffset: 740; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-13 { 0% { stroke-dashoffset: 660; } 100% { stroke-dashoffset: 0; } }
+@keyframes trace-flow-14 { 0% { stroke-dashoffset: 820; } 100% { stroke-dashoffset: 0; } }
 
-.trace-glow { stroke-dasharray: 60 540; animation: trace-flow-1 5s linear infinite; }
-.trace-glow-2 { stroke-dasharray: 50 450; animation: trace-flow-2 4s linear infinite; animation-delay: -1.5s; }
-.trace-glow-3 { stroke-dasharray: 70 630; animation: trace-flow-3 7s linear infinite; animation-delay: -3s; }
-.trace-glow-4 { stroke-dasharray: 45 405; animation: trace-flow-4 3.5s linear infinite; animation-delay: -0.8s; }
-.trace-glow-5 { stroke-dasharray: 55 495; animation: trace-flow-5 6s linear infinite; animation-delay: -2.2s; }
-.trace-glow-6 { stroke-dasharray: 65 585; animation: trace-flow-6 5.5s linear infinite; animation-delay: -4s; }
-.trace-glow-7 { stroke-dasharray: 50 470; animation: trace-flow-7 4.5s linear infinite; animation-delay: -1s; }
-.trace-glow-8 { stroke-dasharray: 48 432; animation: trace-flow-8 8s linear infinite; animation-delay: -5s; }
+.trace-glow    { stroke-dasharray: 60 740; animation: trace-flow-1  5s   linear infinite; }
+.trace-glow-2  { stroke-dasharray: 50 650; animation: trace-flow-2  4.2s linear infinite; animation-delay: -1.5s; }
+.trace-glow-3  { stroke-dasharray: 70 830; animation: trace-flow-3  7s   linear infinite; animation-delay: -3s; }
+.trace-glow-4  { stroke-dasharray: 45 605; animation: trace-flow-4  3.8s linear infinite; animation-delay: -0.8s; }
+.trace-glow-5  { stroke-dasharray: 55 695; animation: trace-flow-5  6s   linear infinite; animation-delay: -2.2s; }
+.trace-glow-6  { stroke-dasharray: 65 785; animation: trace-flow-6  5.5s linear infinite; animation-delay: -4s; }
+.trace-glow-7  { stroke-dasharray: 50 670; animation: trace-flow-7  4.5s linear infinite; animation-delay: -1s; }
+.trace-glow-8  { stroke-dasharray: 48 632; animation: trace-flow-8  8s   linear infinite; animation-delay: -5s; }
+.trace-glow-9  { stroke-dasharray: 55 725; animation: trace-flow-9  5.8s linear infinite; animation-delay: -0.5s; }
+.trace-glow-10 { stroke-dasharray: 45 575; animation: trace-flow-10 3.5s linear infinite; animation-delay: -2.8s; }
+.trace-glow-11 { stroke-dasharray: 70 810; animation: trace-flow-11 6.5s linear infinite; animation-delay: -1.2s; }
+.trace-glow-12 { stroke-dasharray: 60 680; animation: trace-flow-12 4.8s linear infinite; animation-delay: -3.7s; }
+.trace-glow-13 { stroke-dasharray: 50 610; animation: trace-flow-13 4s   linear infinite; animation-delay: -2s; }
+.trace-glow-14 { stroke-dasharray: 65 755; animation: trace-flow-14 7.5s linear infinite; animation-delay: -4.5s; }
 
 .node-glow {
   animation: node-pulse 3s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trace-glow, .trace-glow-2, .trace-glow-3, .trace-glow-4,
-  .trace-glow-5, .trace-glow-6, .trace-glow-7, .trace-glow-8 {
+  [class^="trace-glow"] {
     animation-duration: 200s !important;
   }
   .node-glow { animation-duration: 60s !important; }
