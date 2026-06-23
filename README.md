@@ -1,116 +1,63 @@
-# Tic-Tac-Toe Challenge
+# Tic-Tac-Toe vs AI
 
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-2.0.1-green.svg)](https://flask.palletsprojects.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/Live-tictactoe--ai--tau.vercel.app-38BDF8?style=flat-square)](https://tictactoe-ai-tau.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-A sophisticated Tic-Tac-Toe web application featuring an intelligent adaptive AI that learns from gameplay through reinforcement learning (Q-learning).
+A premium tic-tac-toe game with three AI difficulty tiers, built as a pure client-side static site with a dark circuit-board aesthetic and frosted-glass UI.
+
+## Play it
+
+**[tictactoe-ai-tau.vercel.app](https://tictactoe-ai-tau.vercel.app)**
 
 ## Features
 
-- **Multiple AI Difficulty Levels**:
-  - Easy: Random moves for beginners
-  - Medium: Strategic but beatable AI
-  - Hard: Minimax algorithm with alpha-beta pruning
-  - Adaptive: Q-learning AI that improves by playing against you
+- **Three AI difficulties** — Easy (random), Medium (minimax with mistakes), Hard (full minimax with alpha-beta pruning). Genuinely different behavior at each tier.
+- **Frosted-glass UI** — `backdrop-filter` blur over an animated circuit-board SVG background with traveling cyan neon pulses and pulsing glow nodes.
+- **Fully client-side** — Zero server dependencies. Minimax runs in the browser in microseconds. Deployed as a static site on Vercel.
+- **Responsive down to 320px** — Tested across 13 real device profiles (iPhone SE through iPad Air, small Android through Pro Max). Height-adaptive layout fits within mobile browser chrome with no scrolling.
+- **Accessible** — Full keyboard navigation (tab + arrow keys + enter/space), ARIA roles and labels, visible focus states, `prefers-reduced-motion` support.
+- **Streak tracking** — Win streak counter with animated badge, score persistence via localStorage.
+- **Tactile interactions** — GSAP-powered piece placement spring animation, win-line draw, screen shake, staggered board clear/enter, optional haptic feedback via Vibration API.
 
-- **User Experience**:
-  - Play as X (first move) or O
-  - Responsive design for all devices
-  - Animations and visual feedback
-  - Win/loss tracking statistics
+## Tech Stack
 
-- **Technical Highlights**:
-  - Reinforcement learning implementation
-  - Persistent AI model that remembers strategies
-  - RESTful API for game state management
-  - Clean separation between frontend and backend
+| Layer | Tech |
+|-------|------|
+| UI | Vanilla JS (ES modules), CSS custom properties, GSAP |
+| Game engine | Pure functions: board state, win/draw detection, valid moves |
+| AI engine | Minimax with alpha-beta pruning, difficulty-scaled error injection |
+| Background | Procedurally generated SVG circuit traces, CSS `stroke-dashoffset` animation |
+| Glass effect | `backdrop-filter: blur(20px) saturate(120%)` with `@supports` fallback |
+| Deploy | Vercel static site, zero build step |
 
-### Local Development
+## Project Structure
+
+```
+tictactoe-ai/
+├── index.html          # Single-page app markup
+├── css/
+│   └── styles.css      # Design system, glass tokens, responsive breakpoints
+├── js/
+│   ├── app.js          # DOM controller, event binding, render loop
+│   ├── gameEngine.js   # Pure board logic: win/draw/valid moves
+│   ├── aiEngine.js     # Minimax AI with difficulty tiers
+│   ├── gameState.js    # Centralized reducer + localStorage persistence
+│   ├── animations.js   # GSAP animation helpers
+│   └── circuitBg.js    # Procedural circuit-board SVG generator
+└── vercel.json         # Static deployment config
+```
+
+## Run Locally
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/ultimate-tictactoe.git
-cd ultimate-tictactoe
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the application
-python app.py
-
-# Open browser at http://localhost:5000
+# Any static file server works — no build step needed
+npx serve .
+# or
+python -m http.server 8080
 ```
 
-### Deployment Options
+Open `http://localhost:8080` (or whatever port your server uses).
 
-#### Render
+## License
 
-1. Create a new Web Service on [Render](https://render.com)
-2. Connect your GitHub repository
-3. Configure:
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `gunicorn app:app`
-   - Python Version: 3.9+
-
-#### Vercel
-
-```bash
-npm install -g vercel
-vercel
-```
-
-## How the AI Works
-
-The adaptive AI implements Q-learning, a model-free reinforcement learning algorithm:
-
-1. Each game state is represented as a unique key
-2. The AI maintains Q-values for every possible move in each state
-3. During gameplay, the AI uses an epsilon-greedy strategy to balance:
-   - **Exploration**: Trying new moves to discover better strategies
-   - **Exploitation**: Using moves that have worked well previously
-4. After each game, Q-values are updated based on game outcomes:
-   - Wins are strongly rewarded (+1)
-   - Ties receive moderate rewards (+0.5)
-   - Losses are penalized (-1)
-
-This approach allows the AI to continuously improve and adapt to your play style.
-
-## 🛠️ Project Structure
-
-```
-ultimate-tictactoe/
-│
-├── app.py                # Main Flask application
-├── tictactoe_ai.py       # AI implementation with Q-learning
-├── templates/
-│   └── index.html        # Frontend (HTML, CSS, JavaScript)
-├── game_stats.json       # Game statistics storage
-├── q_values.pkl          # Persistent Q-learning model
-├── requirements.txt      # Python dependencies
-└── README.md             # Project documentation
-```
-
-## Technologies
-
-- **Backend**:
-  - Python with Flask
-  - NumPy for numerical operations
-  - Pickle for model persistence
-
-- **Frontend**:
-  - HTML5 & CSS3
-  - Vanilla JavaScript
-  - Responsive design with CSS Grid
-
-## 📖 About
-
-This project demonstrates my Python skills and software engineering capabilities, particularly in:
-- Creating complete, production-ready applications
-- Implementing machine learning algorithms from scratch
-- Full-stack development with Python and JavaScript
-- Problem-solving and analytical thinking
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT
