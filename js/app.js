@@ -128,6 +128,9 @@ function render() {
   renderScores();
   renderTurn();
   renderSegmented();
+  if (!state.winLine) {
+    winLineContainer.innerHTML = '';
+  }
 }
 
 // ── Dispatch ──
