@@ -45,11 +45,11 @@ body {
   font-family: var(--font-body);
   background: var(--bg);
   color: var(--text-primary);
-  min-height: 100dvh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -616,31 +616,25 @@ body {
   }
 }
 
-/* ── Mobile adjustments ── */
+/* ── Width-based mobile adjustments ── */
 @media (max-width: 480px) {
-  body {
-    padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-    align-items: flex-start;
-    overflow-y: auto;
-  }
-  .game-panel {
-    padding: 22px 16px;
-    border-radius: 18px;
-    margin: auto 0;
-  }
-  .controls-row { flex-direction: column; gap: 8px; }
+  body { padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); }
+  .game-panel { padding: 20px 16px; border-radius: 18px; }
   .score-row { gap: 6px; }
   .score-card { padding: 10px 6px; min-height: 44px; }
   .score-card .score-value { font-size: 1.4rem; }
   .result-modal { padding: 28px 24px; }
 }
 
+/* Only stack controls on truly narrow screens */
+@media (max-width: 360px) {
+  .controls-row { flex-direction: column; gap: 6px; }
+}
+
 @media (max-width: 380px) {
-  body {
-    padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
-  }
-  .game-panel { padding: 18px 12px; }
-  .seg-btn { font-size: 12px; padding: 7px 2px; }
+  body { padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+  .game-panel { padding: 16px 12px; }
+  .seg-btn { font-size: 12px; padding: 6px 2px; }
   .score-card .score-label { font-size: 10px; }
   .score-card .score-value { font-size: 1.2rem; }
   .score-card { padding: 8px 4px; border-radius: 10px; }
@@ -651,4 +645,47 @@ body {
   .game-panel { padding: 14px 10px; }
   .seg-btn { font-size: 11px; }
   .header h1 { font-size: 1rem; }
+}
+
+/* ── Height-based compression for short viewports ── */
+@media (max-height: 750px) {
+  .header { margin-bottom: 14px; }
+  .header .label-tag { margin-top: 3px; }
+  .controls-row { margin-bottom: 12px; }
+  .score-row { margin-bottom: 10px; }
+  .turn-indicator { height: 18px; margin-bottom: 8px; }
+  .bottom-controls { margin-top: 12px; }
+  .game-panel { padding-top: 16px; padding-bottom: 16px; }
+}
+
+@media (max-height: 680px) {
+  .header { margin-bottom: 10px; }
+  .header .label-tag { display: none; }
+  .controls-row { margin-bottom: 8px; gap: 8px; }
+  .seg-btn { min-height: 40px; padding: 6px 4px; }
+  .score-row { margin-bottom: 8px; }
+  .score-card { padding: 8px 6px; }
+  .score-card .score-value { font-size: 1.2rem; }
+  .turn-indicator { height: 16px; margin-bottom: 6px; }
+  .bottom-controls { margin-top: 8px; }
+  .game-panel { padding-top: 12px; padding-bottom: 12px; }
+  .btn-glass { min-height: 40px; padding: 8px 20px; }
+}
+
+@media (max-height: 600px) {
+  .header h1 { font-size: 0.95rem; }
+  .header .label-tag { display: none; }
+  .controls-row { margin-bottom: 6px; gap: 4px; }
+  .seg-group { gap: 3px; }
+  .seg-label { font-size: 10px; }
+  .seg-btn { min-height: 36px; font-size: 12px; padding: 4px 2px; }
+  .score-card { padding: 6px 4px; }
+  .score-card .score-label { font-size: 9px; margin-bottom: 2px; }
+  .score-card .score-value { font-size: 1rem; }
+  .score-row { margin-bottom: 6px; }
+  .turn-indicator { height: 14px; margin-bottom: 4px; }
+  .turn-text { font-size: 10px; }
+  .bottom-controls { margin-top: 6px; }
+  .btn-glass { min-height: 36px; padding: 6px 16px; font-size: 12px; }
+  .game-panel { padding-top: 10px; padding-bottom: 10px; }
 }
